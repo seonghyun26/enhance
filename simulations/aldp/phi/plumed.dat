@@ -1,0 +1,20 @@
+# Heavy atom contacts
+phi: TORSION ATOMS=5,7,9,15
+
+METAD ...
+LABEL=metad
+ARG=phi 
+PACE=500
+HEIGHT=1.2
+SIGMA=0.35
+FILE=HILLS
+GRID_MIN=-pi
+GRID_MAX=pi
+GRID_SPACING=0.1
+... METAD
+
+PRINT ...
+STRIDE=500 
+ARG=phi,metad.bias 
+FILE=COLVAR
+... PRINT

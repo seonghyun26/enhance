@@ -2,7 +2,7 @@
 ;	File 'mdout.mdp' was generated
 ;	By user: guest_sky (1002)
 ;	On host: svr9
-;	At date: Mon Jan 20 11:43:48 2025
+;	At date: Fri Jan 31 03:51:44 2025
 ;
 ;	Created by:
 ;	               :-) GROMACS - gmx grompp, 2023-plumed_2.9.0 (-:
@@ -171,7 +171,7 @@ annealing-temp           =
 ; GENERATE VELOCITIES FOR STARTUP RUN
 gen-vel                  = no
 gen-temp                 = 300
-gen_seed                 = -34743329
+gen_seed                 = -344195650
 
 ; OPTIONS FOR BONDS    
 constraints              = h-bonds

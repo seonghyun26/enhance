@@ -1,8 +1,0 @@
-# Heavy atom contacts
-phi: TORSION ATOMS=5,7,9,15
-
-PRINT ...
-STRIDE=500 
-ARG=phi
-FILE=COLVAR
-... PRINT

@@ -2,7 +2,7 @@
 ;	File 'mdout.mdp' was generated
 ;	By user: guest_sky (1002)
 ;	On host: svr9
-;	At date: Fri Jan 31 03:51:44 2025
+;	At date: Fri Jan 31 13:42:24 2025
 ;
 ;	Created by:
 ;	               :-) GROMACS - gmx grompp, 2023-plumed_2.9.0 (-:
@@ -11,7 +11,7 @@
 ;	Data prefix:  /home/guest_sky/software/gromacs
 ;	Working dir:  /home/guest_sky/geodesic-interpolation-cv/simulations/aldp/data
 ;	Command line:
-;	  gmx grompp -f nvt.mdp -c A.gro -p topol.top -o nvt/3.tpr
+;	  gmx grompp -f nvt.mdp -c A.gro -p topol.top -o nvt/7.tpr
 
 ; VARIOUS PREPROCESSING OPTIONS
 ; Preprocessor information: use cpp syntax.
@@ -171,7 +171,7 @@ annealing-temp           =
 ; GENERATE VELOCITIES FOR STARTUP RUN
 gen-vel                  = no
 gen-temp                 = 300
-gen_seed                 = -344195650
+gen_seed                 = -578392587
 
 ; OPTIONS FOR BONDS    
 constraints              = h-bonds

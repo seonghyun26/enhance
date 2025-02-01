@@ -1,7 +1,7 @@
 # Heavy atom contacts
 phi: TORSION ATOMS=5,7,9,15
 
-FIT_TO_TEMPLATE REFERENCE=/home/guest_sky/geodesic-interpolation-cv/c5.pdb
+FIT_TO_TEMPLATE REFERENCE=/home/guest_sky/enhance/data/aldp/init.pdb
 p1: POSITION ATOM=2
 p2: POSITION ATOM=6
 p3: POSITION ATOM=7

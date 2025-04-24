@@ -2,16 +2,19 @@
 *.DS_Store*
 */log/*
 */nvt/*
-*/nvt_600K/*
+*nvt_600K*
 figures/
 scripts/
 
-*.dat
-*.log
-*.pt
-*.cpt
-*.edr
+*.dat*
+*.log*
+*pt*
+*.cpt*
+*.edr*
+*.gro*
+*.tpr*
 
-*COLVAR
-*HILLS
-*KERNELS
+*COLVAR*
+*HILLS*
+*KERNELS*
+*DEBUG*

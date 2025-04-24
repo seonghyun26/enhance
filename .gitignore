@@ -8,7 +8,8 @@ scripts/
 
 *.dat*
 *.log*
-*pt*
+*.pt
+*.pt*
 *.cpt*
 *.edr*
 *.gro*

@@ -1,12 +1,15 @@
 .ipynb_checkpoints/
+*__pycache__*
 *.DS_Store*
 */log/*
 */nvt/*
 *nvt_600K*
 figures/
 scripts/
+/wandb/
 
 *.dat*
+*.pdb*
 *.log*
 *.pt
 *.pt*
@@ -16,6 +19,7 @@ scripts/
 *.tpr*
 
 *COLVAR*
+*STATE*
 *HILLS*
 *KERNELS*
 *DEBUG*

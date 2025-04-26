@@ -9,6 +9,7 @@ cv_name = {
     'DeepTICA': 'deep.node-0',
     'TBG': 'deep.node-0',
 }
+
 bar_labels = {
     'ref': r'$\phi$',
     'phi': r'$\phi$',

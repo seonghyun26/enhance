@@ -1,7 +1,11 @@
 import os
+import re
+import tqdm
 import wandb
 import numpy as np
 import matplotlib.pyplot as plt
+
+from tqdm import tqdm
 
 from scipy.interpolate import interp1d
 
@@ -9,7 +13,7 @@ from .constant import *
 
 def load_fes_data(log_dir, method, idx):
     # Load file
-    fes_file = os.path.join(log_dir, 'fes', str(idx)+".dat")
+    fes_file = os.path.join(log_dir, 'fes/fes_' + str(idx) + ".dat")
     fes_data = np.loadtxt(fes_file, comments='#')
     with open(fes_file, 'r') as file:
         first_line = file.readline().strip()
@@ -57,7 +61,7 @@ def load_fes_data(log_dir, method, idx):
 def calculate_delta_f(phi, free):    
     # Filter data based on conditions
     A = free[phi < 0]
-    B = free[(phi > 0) & (phi < 2.2)]
+    B = free[(phi > 0)]
     
     # Calculate free energies
     fesA = -2.49 * np.logaddexp.reduce(-1 / 2.49 * A)
@@ -74,26 +78,34 @@ def plot_free_energy_difference(args, base_dir):
     with open(cv_dir, 'r') as file:
         first_line = file.readline().strip()
         keys = first_line.split()[2:]
-    time_horizon = int(data[:, keys.index('time')][-1]) // 200
-    times = np.linspace(0, 20, time_horizon + 1)
+    # time_horizon = int(data[:, keys.index('time')][-1]) // 200
     
     # Compute FES
     seed_delta_fs = []
-    for seed in range(0, args.seed + 1):
+    for seed in tqdm(
+        range(0, args.seed + 1),
+        desc = "Computing mean delta"
+    ):
         log_dir = os.path.join(base_dir, 'log', args.date, str(seed))
         delta_fs = []
         
         # Compute delta F over time
-        for HILLS_idx in range(time_horizon + 1):
+        fes_dir = os.path.join(log_dir, "fes")
+        files = [f for f in os.listdir(fes_dir) if os.path.isfile(os.path.join(fes_dir, f))]
+        fes_num = files[-1]
+        m = re.match(r"fes_(\d+)\.dat", fes_num)
+        fes_num = int(m.group(1))
+        for HILLS_idx in range(1, fes_num + 1):
             phi, free = load_fes_data(log_dir, args.method, HILLS_idx)
             fes = calculate_delta_f(phi, free)
             delta_fs.append(fes)
-        wandb.log({f"delta_f/{seed}": delta_fs})
         seed_delta_fs.append(delta_fs)
     delta_fs = np.array(seed_delta_fs)
     mean_delta_fs = np.nanmean(delta_fs, axis=0)
     std_delta_fs = np.nanstd(delta_fs, axis=0)
+    print(mean_delta_fs[-1], std_delta_fs[-1])
     
+    times = np.linspace(0, 20, fes_num)
     colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
     c = colors.pop(0)
     mask = ~np.isnan(mean_delta_fs)
@@ -104,8 +116,9 @@ def plot_free_energy_difference(args, base_dir):
         plt.plot(times[mask], mean_delta_fs[mask], color=c)
         plt.fill_between(times[mask], mean_delta_fs[mask] - std_delta_fs[mask], mean_delta_fs[mask] + std_delta_fs[mask], alpha=0.2, color=c)
 
+    print(times[mask].shape)
     plt.xlim(0,20)
-    plt.ylim(-20,50)
+    plt.ylim(-10,30)
     plt.axhline(y=9.04, color='r', linestyle='--', label='GT')
     plt.fill_between(times, 9.04 - 0.33, 9.37, color='r', alpha=0.2)
     plt.xlabel('Time (ns)', fontsize=20, fontweight="medium")
@@ -119,8 +132,8 @@ def plot_free_energy_difference(args, base_dir):
     plt.savefig(f'./fig/deltaf_{args.method}_{args.ns}.png', dpi=300, bbox_inches="tight")
     wandb.log({
         f"delta_f": wandb.Image(f'./fig/deltaf_{args.method}_{args.ns}.png'),
-        f"delta_f_mean": mean_delta_fs,
-        f"delta_f_std": std_delta_fs,
+        f"mean_delta_f": mean_delta_fs[-1],
+        f"std_delta_f": std_delta_fs[-1]
     })
     print(f'Figure saved at ./fig/deltaf_{args.method}_{args.ns}.png')
     plt.show()

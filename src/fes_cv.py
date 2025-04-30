@@ -3,7 +3,6 @@ import wandb
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 from .constant import *
 
 
@@ -56,6 +55,7 @@ def plot_fes_over_cv(args, base_dir):
     plt.savefig(f'./fig/fes_{args.method}_{args.ns}.png', dpi=300, bbox_inches="tight")
     plt.savefig(f'./fig/fes_{args.method}_{args.ns}.pdf', dpi=300, bbox_inches="tight")
     wandb.log({f"fes": wandb.Image(f'./fig/fes_{args.method}_{args.ns}.png')})
+    print(f'Figure saved at ./fig/fes_{args.method}_{args.ns}.png')
     plt.show()
     plt.close()
     

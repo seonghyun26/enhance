@@ -16,37 +16,40 @@ def parse_args():
     return parser.parse_args()
 
 def parse_plumed_metad(filename):
-    """
-    plumed.dat 파일에서 METAD 블록 안의 파라미터를 파싱하는 함수
-    """
-    metad_params = {}
-    inside_metad = False
+    params = {}
+    inside_enhance_sampling = False
 
     with open(filename, "r") as f:
         for line in f:
             line = line.strip()
 
             if line.startswith("METAD"):
-                inside_metad = True
+                inside_enhance_sampling = True
+                prefix = "metad"
+                continue
+            elif line.startswith("opes"):
+                inside_enhance_sampling = True
+                prefix = "opes"
                 continue
 
-            if inside_metad and line.startswith("... METAD"):
+            if inside_enhance_sampling and line.startswith("... METAD"):
+                break
+            elif inside_enhance_sampling and line.startswith("opes"):
                 break
 
-            if inside_metad and line and not line.startswith("#"):
+            if inside_enhance_sampling and line and not line.startswith("#"):
                 if "=" in line:
                     key, value = line.split("=", 1)
-                    if key.strip() == 'LABEL':
-                        prefix = value.strip()
-                    elif key.strip() in ['ARG', 'FILE']:
-                        metad_params[prefix + "/" + key.strip()] = value.strip()
+                    if key.strip() in ['ARG', 'FILE', 'STATE_WFILE', 'STATE_WSTRIDE']:
+                        params[prefix + "/" + key.strip()] = value.strip()
                     else:
-                        metad_params[prefix + "/" + key.strip()] = float(value.strip())
-
-    return metad_params
+                        params[prefix + "/" + key.strip()] = float(value.strip())
+        
+    return params
 
 
 args = parse_args()
+base_dir = f'{os.getcwd()}/simulations/aldp/{args.method}/{args.ns}'
 plumed_params = parse_plumed_metad(args.plumed)
 
 wandb.init(
@@ -57,8 +60,8 @@ wandb.init(
 )
 wandb.log(plumed_params)
 
-base_dir = f'{os.getcwd()}/simulations/aldp/{args.method}/{args.ns}'
-
 plot_phi_distribution(args, base_dir)
 plot_free_energy_difference(args, base_dir)
-plot_fes_over_cv(args, base_dir)
+# plot_fes_over_cv(args, base_dir)
+
+wandb.finish()

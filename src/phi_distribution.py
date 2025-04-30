@@ -36,6 +36,12 @@ def plot_phi_distribution(args, base_dir):
         cbar.ax.tick_params(labelsize=14)
         scatter.set_clim(cv.min(), cv.max())
         
+        # Count phi
+        phi_negative = phi[phi < 0].shape[0] / phi.shape[0]
+        phi_positive = phi[phi > 0].shape[0] / phi.shape[0]
+        print(phi.shape)
+        print(phi_positive, phi_negative)
+        
         # Customize plot
         plt.xlabel('Time (ns)', fontsize=20, fontweight="medium")
         plt.ylabel(r'$\phi$', fontsize=20, fontweight="medium")
@@ -49,7 +55,11 @@ def plot_phi_distribution(args, base_dir):
         plt.savefig(f'./fig/phi_distribution_{args.method}_{args.ns}_{seed}.pdf', dpi=300, bbox_inches="tight")
         plt.show()
         plt.close()
-        wandb.log({f"phi_distribution/{seed}": wandb.Image(f"./fig/phi_distribution_{args.method}_{args.ns}_{seed}.png")})
+        wandb.log({
+            f"phi_distribution/{seed}": wandb.Image(f"./fig/phi_distribution_{args.method}_{args.ns}_{seed}.png"),
+            f"phi_positive/{seed}": phi_positive,
+            f"phi_negative/{seed}": phi_negative,
+        })
         
     print(f'Figure saved at ./fig/phi_distribution_{args.method}_{args.ns}.png')
     return wandb_image_list

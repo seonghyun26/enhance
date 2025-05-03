@@ -10,6 +10,7 @@ def parse_args():
     parser.add_argument('--date', type = str, default = "debug", help='Date for the experiment')
     parser.add_argument('--method', type = str, default = "phi", help='Date for the experiment')
     parser.add_argument('--ns', type = int, default = 10, help = "Length of simulation used for dataset")
+    parser.add_argument('--step', type = int, default = 10000000, help = "Number of steps")
     parser.add_argument('--seed', type = int, default = 0, help = "Number of seeds")
     parser.add_argument('--tags', nargs = '*', help='Tags for Wandb')
     
@@ -62,6 +63,6 @@ wandb.log(plumed_params)
 
 plot_phi_distribution(args, base_dir)
 plot_free_energy_difference(args, base_dir)
-# plot_fes_over_cv(args, base_dir)
+plot_fes_over_cv(args, base_dir)
 
 wandb.finish()

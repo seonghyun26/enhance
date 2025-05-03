@@ -105,7 +105,15 @@ def plot_free_energy_difference(args, base_dir):
     std_delta_fs = np.nanstd(delta_fs, axis=0)
     print(mean_delta_fs[-1], std_delta_fs[-1])
     
-    times = np.linspace(0, 20, fes_num)
+    cv_dir = os.path.join(base_dir, 'log', args.date, '0', 'COLVAR')
+    with open(cv_dir, 'r') as file:
+        first_line = file.readline().strip()
+        keys = first_line.split()[2:]
+    data = np.loadtxt(cv_dir, comments='#')
+    time_horizon = int(data[:, keys.index('time')][-1]) / 1000 # unit in nano, since record in ps
+    times = np.linspace(0, time_horizon, num=mean_delta_fs.shape[0])
+    print(times)
+    
     colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
     c = colors.pop(0)
     mask = ~np.isnan(mean_delta_fs)
@@ -116,8 +124,7 @@ def plot_free_energy_difference(args, base_dir):
         plt.plot(times[mask], mean_delta_fs[mask], color=c)
         plt.fill_between(times[mask], mean_delta_fs[mask] - std_delta_fs[mask], mean_delta_fs[mask] + std_delta_fs[mask], alpha=0.2, color=c)
 
-    print(times[mask].shape)
-    plt.xlim(0,20)
+    plt.xlim(0,time_horizon)
     plt.ylim(-10,30)
     plt.axhline(y=9.04, color='r', linestyle='--', label='GT')
     plt.fill_between(times, 9.04 - 0.33, 9.37, color='r', alpha=0.2)
@@ -138,5 +145,10 @@ def plot_free_energy_difference(args, base_dir):
     print(f'Figure saved at ./fig/deltaf_{args.method}_{args.ns}.png')
     plt.show()
     plt.close()
+    
+    # plt.figure(figsize=(10, 6))
+    # plt.scatter(phi, free)
+    # plt.savefig(f'./fig/_test.png', dpi=300, bbox_inches="tight")
+    
     
     return 

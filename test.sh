@@ -7,11 +7,10 @@ ns=10
 seed=0
 
 export TZ=Asia/Seoul
-datetime=$(date '+%m%d_%H%M%S')
-# datetime=debug
+datetime=debug
 echo $datetime
 
-sigma=(0.015)
+sigma=(0.05)
 
 for idx in "${!sigma[@]}"; do
     sigma=${sigma[$idx]}

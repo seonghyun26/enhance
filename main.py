@@ -5,7 +5,7 @@ import argparse
 from src import *
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Train TBG model')
+    parser = argparse.ArgumentParser(description='Analyze enhanced sampling simulations')
     parser.add_argument('--plumed', type = str, default = "./simulations/aldp/DeepLDA/plumed.dat", help='File to plumed')
     parser.add_argument('--date', type = str, default = "debug", help='Date for the experiment')
     parser.add_argument('--method', type = str, default = "phi", help='Date for the experiment')

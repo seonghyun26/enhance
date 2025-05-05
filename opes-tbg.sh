@@ -1,4 +1,6 @@
-bash experiments.sh TBG 0422_005450-jit 3
+# bash test.sh TBG 0502_191856-jit 1
+
+bash experiments.sh TBG 0502_191856-jit 3
 
 # for seed in 0 1 2
 # do

@@ -5,8 +5,8 @@ method=$1
 ckpt=$2
 max_seed=$3
 ns=10
-# step=10000000
-step=50000000
+step=10000000
+# step=50000000
 
 export TZ=Asia/Seoul
 datetime=$(date '+%m%d_%H%M%S')
@@ -24,21 +24,21 @@ for (( seed=0; seed<=max_seed; seed++ )); do
         echo "Not ref"
         sed -i "/deep: PYTORCH_MODEL/,/^\.\.\./ s|FILE=test\.pt|FILE=./simulations/${molecule}/${method}/${ns}/${ckpt}.pt|g" ${base_dir}/plumed.dat
         sed -i "/deep: PYTORCH_MODEL/,/^\.\.\./! s|FILE=|FILE=${base_dir}/|g" ${base_dir}/plumed.dat
-    elif [[ "$method" == "ref" ]]; then
-        echo "Ref"
+    else
+        echo $method
         sed -i "s|FILE=|FILE=${base_dir}/|g" ${base_dir}/plumed.dat
     fi
     cat ${base_dir}/plumed.dat
 
 
-    CUDA_VISIBLE_DEVICES=6 gmx mdrun \
+    CUDA_VISIBLE_DEVICES=$(($seed+$gpuidx)) gmx mdrun \
         -s ./simulations/aldp/data/nvt/0.tpr \
         -deffnm ${base_dir} \
         -plumed ${base_dir}/plumed.dat \
         -nsteps ${step} \
         -ntomp 1 \
         -nb gpu \
-        -bonded gpu 
+        -bonded gpu &
     
     sleep 1
 

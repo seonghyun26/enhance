@@ -9,7 +9,7 @@ step=10000000
 # step=50000000
 
 export TZ=Asia/Seoul
-datetime=0430_042652
+datetime=0502_102327
 echo $datetime
 
 for (( seed=0; seed<=max_seed; seed++ )); do

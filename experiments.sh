@@ -67,6 +67,7 @@ python3 main.py \
     --plumed ./simulations/${molecule}/${method}/plumed.dat \
     --date ${datetime} \
     --method ${method} \
-    --step ${step}
+    --step ${step} \
+    --ckpt ${ckpt}
 
 echo "Plots done!"

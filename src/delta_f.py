@@ -92,6 +92,7 @@ def plot_free_energy_difference(args, base_dir):
         # Compute delta F over time
         fes_dir = os.path.join(log_dir, "fes")
         files = [f for f in os.listdir(fes_dir) if os.path.isfile(os.path.join(fes_dir, f))]
+        print(files)
         fes_num = files[-1]
         m = re.match(r"fes_(\d+)\.dat", fes_num)
         fes_num = int(m.group(1))
@@ -114,29 +115,31 @@ def plot_free_energy_difference(args, base_dir):
     times = np.linspace(0, time_horizon, num=mean_delta_fs.shape[0])
     print(times)
     
-    colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
-    c = colors.pop(0)
+    c = "#5684E9"
     mask = ~np.isnan(mean_delta_fs)
-    plt.figure(figsize=(10, 6))
+    mask = mask & (times > 3)
+    
+    plt.figure(figsize=(12, 6))
     if mask.sum() == 0:
         plt.plot(times, np.zeros_like(times), alpha=0.0)
     else:
         plt.plot(times[mask], mean_delta_fs[mask], color=c)
         plt.fill_between(times[mask], mean_delta_fs[mask] - std_delta_fs[mask], mean_delta_fs[mask] + std_delta_fs[mask], alpha=0.2, color=c)
-
-    plt.xlim(0,time_horizon)
-    plt.ylim(-10,30)
-    plt.axhline(y=9.04, color='r', linestyle='--', label='GT')
-    plt.fill_between(times, 9.04 - 0.33, 9.37, color='r', alpha=0.2)
-    plt.xlabel('Time (ns)', fontsize=20, fontweight="medium")
-    plt.ylabel(r'$\Delta F$'+' (kJ/mol)', fontsize=20, fontweight="medium")
-    plt.title(r'$\Delta F$' + f' over {args.method}', fontsize=20, fontweight="medium")
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
-    plt.grid(True)
+    plt.xlim(3, time_horizon)
+    plt.ylim(-2, 20)
+    plt.axhline(y=9.04, color='#C10035', linestyle='--', label='GT')
+    plt.fill_between(times, 9.04 - 0.33, 9.04 + 0.33, color='#C10035', alpha=0.2)
+    plt.xlabel('Time (ns)', fontsize=FONTSIZE, fontweight="medium")
+    plt.ylabel(r'$\Delta F$' + ' (kJ/mol)', fontsize=FONTSIZE, fontweight="medium")
+    # plt.title(r'$\Delta F$' + f' over {args.method}', fontsize=20, fontweight="medium")
+    plt.xticks(fontsize=FONTSIZE_SMALL)
+    from matplotlib.ticker import MaxNLocator
+    plt.gca().xaxis.set_major_locator(MaxNLocator(nbins=5))
+    plt.yticks([0, 6, 12, 18], fontsize=FONTSIZE_SMALL)
+    plt.grid(True, linestyle='--', alpha=0.7)
     plt.tight_layout()
-    plt.savefig(f'./fig/deltaf_{args.method}_{args.ns}.pdf', dpi=300, bbox_inches="tight")
     plt.savefig(f'./fig/deltaf_{args.method}_{args.ns}.png', dpi=300, bbox_inches="tight")
+    plt.savefig(f'./fig/deltaf_{args.method}_{args.ns}.pdf', dpi=300, bbox_inches="tight")
     wandb.log({
         f"delta_f": wandb.Image(f'./fig/deltaf_{args.method}_{args.ns}.png'),
         f"mean_delta_f": mean_delta_fs[-1],
@@ -145,10 +148,5 @@ def plot_free_energy_difference(args, base_dir):
     print(f'Figure saved at ./fig/deltaf_{args.method}_{args.ns}.png')
     plt.show()
     plt.close()
-    
-    # plt.figure(figsize=(10, 6))
-    # plt.scatter(phi, free)
-    # plt.savefig(f'./fig/_test.png', dpi=300, bbox_inches="tight")
-    
     
     return 

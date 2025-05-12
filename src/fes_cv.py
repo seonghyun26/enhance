@@ -9,7 +9,7 @@ from .constant import *
 
 
 def marginalize(free):    
-    free = free.reshape(51,51)
+    free = free.reshape(100, 100)
     free = -2.49 * np.logaddexp.reduce(-1 / 2.49 * free, 0)
     return free
 

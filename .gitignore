@@ -9,6 +9,8 @@ figures/
 scripts/
 /wandb/
 
+*.png*
+*.pdf*
 *.dat*
 *.pdb*
 *.log*

@@ -1,3 +1,4 @@
-bash experiments.sh TBGXYZ 0505_232520-jit 3
+bash experiments.sh TBGXYZ 0517_234227-jit 3
 
-# bash test.sh TBG 0502_191856-jit 1
+# bash plot.sh TBGXYZ 0514_211149-jit 3 0514_152625
+

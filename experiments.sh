@@ -32,13 +32,23 @@ for (( seed=0; seed<=max_seed; seed++ )); do
 
 
     CUDA_VISIBLE_DEVICES=$(($seed+$gpuidx)) gmx mdrun \
-        -s ./simulations/aldp/data/nvt/0.tpr \
+        -s ./simulations/aldp/data/0.tpr \
         -deffnm ${base_dir} \
         -plumed ${base_dir}/plumed.dat \
         -nsteps ${step} \
         -ntomp 1 \
         -nb gpu \
         -bonded gpu &
+
+    # CUDA_VISIBLE_DEVICES=$(($seed+$gpuidx)) gmx mdrun \
+    #     -s ./simulations/aldp/data/nvt.tpr \
+    #     -deffnm ${base_dir} \
+    #     -plumed ${base_dir}/plumed.dat \
+    #     -nsteps ${step} \
+    #     -reseed ${seed} \
+    #     -ntomp 1 \
+    #     -nb gpu \
+    #     -bonded gpu &
     
     sleep 1
 

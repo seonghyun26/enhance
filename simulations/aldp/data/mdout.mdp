@@ -1,17 +1,17 @@
 ;
 ;	File 'mdout.mdp' was generated
-;	By user: guest_sky (1002)
-;	On host: svr9
-;	At date: Tue Feb 11 05:49:50 2025
+;	By user: unknown (0)
+;	On host: 8237a2468f90
+;	At date: Wed May 14 02:19:50 2025
 ;
 ;	Created by:
-;	               :-) GROMACS - gmx grompp, 2023-plumed_2.9.0 (-:
+;	              :-) GROMACS - gmx grompp, 2024.3-plumed_2.10b (-:
 ;	
-;	Executable:   /home/guest_sky/software/gromacs/bin/gmx
-;	Data prefix:  /home/guest_sky/software/gromacs
-;	Working dir:  /home/guest_sky/enhance/simulations/aldp/data
+;	Executable:   /gromacs/AVX2_256_ts/bin/gmx
+;	Data prefix:  /gromacs/AVX2_256_ts
+;	Working dir:  /mnt/enhance/simulations/aldp/data
 ;	Command line:
-;	  gmx grompp -f nvt.mdp -c A.gro -p topol.top -o nvt_600K/7.tpr
+;	  gmx grompp -f sample.mdp -c c5.gro -p aldp.top -o nvt.tpr
 
 ; VARIOUS PREPROCESSING OPTIONS
 ; Preprocessor information: use cpp syntax.
@@ -25,13 +25,15 @@ integrator               = md
 ; Start time and timestep in ps
 tinit                    = 0
 dt                       = 0.002
-nsteps                   = 100000000
+nsteps                   = 500000
 ; For exact run continuation or redoing part of a run
 init-step                = 0
 ; Part index is updated automatically on checkpointing (keeps files separate)
 simulation-part          = 1
 ; Multiple time-stepping
 mts                      = no
+; factor by which to increase the mass of the lightest atoms
+mass-repartition-factor  = 1
 ; mode for center of mass motion removal
 comm-mode                = Linear
 ; number of steps for center of mass motion removal
@@ -65,11 +67,11 @@ nstxout                  = 0
 nstvout                  = 0
 nstfout                  = 0
 ; Output frequency for energies to log file and energy file
-nstlog                   = 1000
+nstlog                   = 5000
 nstcalcenergy            = 100
-nstenergy                = 1000
+nstenergy                = 5000
 ; Output frequency and precision for .xtc file
-nstxout-compressed       = 0
+nstxout-compressed       = 5000
 compressed-x-precision   = 1000
 ; This selects the subset of atoms for the compressed
 ; trajectory file. You can select multiple groups. By
@@ -86,30 +88,32 @@ nstlist                  = 10
 ; Periodic boundary conditions: xyz, no, xy
 pbc                      = xyz
 periodic-molecules       = no
-; Allowed energy error due to the Verlet buffer in kJ/mol/ps per atom,
+; Allowed energy drift due to the Verlet buffer in kJ/mol/ps per atom,
 ; a value of -1 means: use rlist
 verlet-buffer-tolerance  = 0.005
+; Allowed error in the average pressure due to the Verlet buffer for LJ interactions
+verlet-buffer-pressure-tolerance = 0.5
 ; nblist cut-off        
-rlist                    = 5.0
+rlist                    = 1
 ; long-range cut-off for switched potentials
 
 ; OPTIONS FOR ELECTROSTATICS AND VDW
 ; Method for doing electrostatics
-coulombtype              = Cut-off
+coulombtype              = PME
 coulomb-modifier         = Potential-shift-Verlet
 rcoulomb-switch          = 0
-rcoulomb                 = 5.0
+rcoulomb                 = 1.0
 ; Relative dielectric constant for the medium and the reaction field
 epsilon-r                = 1
 epsilon-rf               = 0
 ; Method for doing Van der Waals
-vdw-type                 = Cut-off
+vdwtype                  = Cut-off
 vdw-modifier             = Potential-shift-Verlet
 ; cut-off lengths       
 rvdw-switch              = 0
-rvdw                     = 5.0
+rvdw                     = 1.0
 ; Apply long range dispersion corrections for Energy and Pressure
-DispCorr                 = No
+DispCorr                 = EnerPres
 ; Extension of the potential lookup tables beyond the cut-off
 table-extension          = 1
 ; Separate tables between energy group pairs
@@ -141,13 +145,13 @@ print-nose-hoover-chain-variables = no
 tc-grps                  = System
 ; Time constant (ps) and reference temperature (K)
 tau-t                    = 0.1
-ref-t                    = 600
+ref-t                    = 300
 ; pressure coupling     
 pcoupl                   = no
 pcoupltype               = Isotropic
 nstpcouple               = -1
 ; Time constant (ps), compressibility (1/bar) and reference P (bar)
-tau-p                    = 1
+tau-p                    = 5
 compressibility          = 
 ref-p                    = 
 ; Scaling of reference coordinates, No, All or COM
@@ -171,14 +175,14 @@ annealing-temp           =
 ; GENERATE VELOCITIES FOR STARTUP RUN
 gen-vel                  = no
 gen-temp                 = 300
-gen_seed                 = -8659977
+gen_seed                 = -1629522229
 
 ; OPTIONS FOR BONDS    
 constraints              = h-bonds
 ; Type of constraint algorithm
-constraint_algorithm     = LINCS
+constraint-algorithm     = LINCS
 ; Do not constrain the start configuration
-continuation             = no
+continuation             = yes
 ; Use successive overrelaxation to reduce the number of shake iterations
 Shake-SOR                = no
 ; Relative tolerance of shake
@@ -282,6 +286,7 @@ freezegrps               =
 freezedim                = 
 cos-acceleration         = 0
 deform                   = 
+deform-init-flow         = no
 
 ; simulated tempering variables
 simulated-tempering      = no
@@ -319,3 +324,6 @@ density-guided-simulation-active = false
 
 ; QM/MM with CP2K
 qmmm-cp2k-active         = false
+
+; Colvars bias
+colvars-active           = false

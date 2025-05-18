@@ -92,7 +92,7 @@ def plot_free_energy_difference(args, base_dir):
         # Compute delta F over time
         fes_dir = os.path.join(log_dir, "fes")
         files = [f for f in os.listdir(fes_dir) if os.path.isfile(os.path.join(fes_dir, f))]
-        print(files)
+
         fes_num = files[-1]
         m = re.match(r"fes_(\d+)\.dat", fes_num)
         fes_num = int(m.group(1))
@@ -113,29 +113,38 @@ def plot_free_energy_difference(args, base_dir):
     data = np.loadtxt(cv_dir, comments='#')
     time_horizon = int(data[:, keys.index('time')][-1]) / 1000 # unit in nano, since record in ps
     times = np.linspace(0, time_horizon, num=mean_delta_fs.shape[0])
-    print(times)
+    print(f"Times: {times}")
     
     c = "#5684E9"
+    ref = 10.06
     mask = ~np.isnan(mean_delta_fs)
     mask = mask & (times > 3)
+    yticks = [4, 8, 12, 16]
     
-    plt.figure(figsize=(12, 6))
+    plt.figure(figsize=(8, 5))
     if mask.sum() == 0:
         plt.plot(times, np.zeros_like(times), alpha=0.0)
     else:
-        plt.plot(times[mask], mean_delta_fs[mask], color=c)
-        plt.fill_between(times[mask], mean_delta_fs[mask] - std_delta_fs[mask], mean_delta_fs[mask] + std_delta_fs[mask], alpha=0.2, color=c)
+        plt.plot(times[mask], mean_delta_fs[mask], color=c, linewidth=2)
+        plt.fill_between(
+            times[mask], 
+            mean_delta_fs[mask] - std_delta_fs[mask], 
+            mean_delta_fs[mask] + std_delta_fs[mask], 
+            alpha=0.2,
+            color=c,
+            linewidth=2
+        )
     plt.xlim(3, time_horizon)
-    plt.ylim(-2, 20)
-    plt.axhline(y=9.04, color='#C10035', linestyle='--', label='GT')
-    plt.fill_between(times, 9.04 - 0.33, 9.04 + 0.33, color='#C10035', alpha=0.2)
+    plt.ylim(yticks[0] - 1, yticks[-1] + 1)
+    plt.axhline(y=ref, color='#C10035', linestyle='--', label='GT', linewidth=2)
+    plt.fill_between(times, ref - 0.5, ref + 0.5, color='#C10035', alpha=0.2)
     plt.xlabel('Time (ns)', fontsize=FONTSIZE, fontweight="medium")
     plt.ylabel(r'$\Delta F$' + ' (kJ/mol)', fontsize=FONTSIZE, fontweight="medium")
     # plt.title(r'$\Delta F$' + f' over {args.method}', fontsize=20, fontweight="medium")
     plt.xticks(fontsize=FONTSIZE_SMALL)
     from matplotlib.ticker import MaxNLocator
     plt.gca().xaxis.set_major_locator(MaxNLocator(nbins=5))
-    plt.yticks([0, 6, 12, 18], fontsize=FONTSIZE_SMALL)
+    plt.yticks(yticks, fontsize=FONTSIZE_SMALL)
     plt.grid(True, linestyle='--', alpha=0.7)
     plt.tight_layout()
     plt.savefig(f'./fig/deltaf_{args.method}_{args.ns}.png', dpi=300, bbox_inches="tight")

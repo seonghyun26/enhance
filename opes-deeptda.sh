@@ -1,18 +1,3 @@
-bash experiments.sh DeepTDA DeepTDA-10
+# bash experiments.sh DeepTDA 0517_005434-jit 3
 
-# for seed in 0 1 2
-# do
-#     base_dir="./simulations/aldp/DeepTDA/10/log/0429_091159/${seed}"
-
-#     python3 FES_from_State.py \
-#         --state ${base_dir}/STATE \
-#         --outfile ${base_dir}/fes \
-#         --temp 300 \
-#         --all_stored
-# done
-
-# python3 main.py \
-#     --seed 2 \
-#     --plumed ./simulations/aldp/DeepTDA/plumed.dat \
-#     --date 0429_091159 \
-#     --method DeepTDA
+bash plot.sh DeepTDA 0517_005434-jit 3 0517_030359

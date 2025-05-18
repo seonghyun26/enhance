@@ -50,18 +50,24 @@ def plot_fes_over_cv(args, base_dir):
     mean_pmf = np.mean(pmfs, axis=0)
     mean_pmf = mean_pmf - mean_pmf.min()
     std_pmf = np.std(pmfs, axis=0)
+    
+    
 
-    plt.figure(figsize=(10, 6))
-    plt.plot(cv, mean_pmf)
-    plt.title(f'FES over {args.method}', fontsize=20, fontweight="medium")
-    plt.fill_between(cv, mean_pmf - std_pmf, mean_pmf + std_pmf, alpha=0.2)
-    plt.xlabel(bar_labels[args.method], fontsize=20, fontweight="medium")
-    plt.ylabel('FES', fontsize=20, fontweight="medium")
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
-    plt.xlim(cv.min(), cv.max())
-    plt.grid(True)
+    c = "#5684E9"
+    plt.figure(figsize=(8, 5))
+    plt.plot(cv, mean_pmf, color=c)
+    plt.fill_between(cv, mean_pmf - std_pmf, mean_pmf + std_pmf, alpha=0.2, color=c)
+    
+    plt.xlabel(bar_labels[args.method], fontsize=FONTSIZE, fontweight="medium")
+    plt.ylabel('FES (kJ/mol)', fontsize=FONTSIZE, fontweight="medium")
+    from matplotlib.ticker import MaxNLocator
+    plt.gca().xaxis.set_major_locator(MaxNLocator(nbins=5))
+    plt.gca().yaxis.set_major_locator(MaxNLocator(nbins=5))
+    plt.xticks(fontsize=FONTSIZE_SMALL)
+    plt.yticks(fontsize=FONTSIZE_SMALL)
+    plt.grid(True, linestyle='--', alpha=0.7, linewidth=2)
     plt.tight_layout()
+    
     plt.savefig(f'./fig/fes_{args.method}_{args.ns}.png', dpi=300, bbox_inches="tight")
     plt.savefig(f'./fig/fes_{args.method}_{args.ns}.pdf', dpi=300, bbox_inches="tight")
     wandb.log({f"fes": wandb.Image(f'./fig/fes_{args.method}_{args.ns}.png')})

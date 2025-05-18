@@ -1,3 +1,3 @@
-bash experiments.sh DeepTICA DeepTICA-10 3
+# bash experiments.sh DeepTICA 0517_033502-jit 3
 
-# bash plot.sh DeepTICA DeepTICA-10 3
+bash plot.sh DeepTICA 0517_033502-jit 3 0517_130832
